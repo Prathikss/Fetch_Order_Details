@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management Portal</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        h2 { color: #2c3e50; text-align: center; margin-bottom: 1.5rem; }
+
+        .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input:focus { border-color: #3498db; }
+
+        button {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #2980b9; }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .label { font-weight: bold; color: #7f8c8d; }
+        .value { color: #2c3e50; font-weight: 600; }
+
+        #statusMsg { text-align: center; margin-top: 10px; font-size: 14px; }
+        .error { color: #e74c3c; }
+        .loading { color: #3498db; }
+
+        .fade-in { animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Order Tracker</h2>
+
+    <div class="search-container">
+        <input type="text" id="orderNoInput" placeholder="Order Number"
+               onkeydown="if(event.keyCode==13) searchOrder()" autofocus>
+        <button onclick="searchOrder()">Search</button>
+    </div>
+
+    <div id="statusMsg"></div>
+
+    <div id="result" class="fade-in">
+        <div class="detail-row">
+            <span class="label">Customer Name</span>
+            <span class="value" id="resName"></span>
+        </div>
+        <div class="detail-row">
+            <span class="label">Status</span>
+            <span class="value" id="resStatus"></span>
+        </div>
+        <div class="detail-row">
+            <span class="label">Total Amount</span>
+            <span class="value">$<span id="resAmount"></span></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const baseURL = "https://springapp-683081983858.asia-south1.run.app/orders"; // deployed URL
+
+    async function searchOrder() {
+        const orderNo = document.getElementById('orderNoInput').value.trim();
+        const resultDiv = document.getElementById('result');
+        const statusMsg = document.getElementById('statusMsg');
+
+        resultDiv.style.display = 'none';
+        statusMsg.innerHTML = '';
+
+        if(!orderNo) {
+            statusMsg.innerHTML = '<span class="error">Please enter an order number</span>';
+            return;
+        }
+
+        statusMsg.innerHTML = '<span class="loading">Searching...</span>';
+
+        try {
+            const response = await fetch(`${baseURL}/${encodeURIComponent(orderNo)}`);
+
+            if (!response.ok) {
+                if(response.status === 404) {
+                    throw new Error("Order not found in our records.");
+                }
+                throw new Error("Server error occurred.");
+            }
+
+            const data = await response.json();
+
+            document.getElementById('resName').innerText = data.customerName;
+            document.getElementById('resStatus').innerText = data.status;
+            document.getElementById('resAmount').innerText = data.totalAmount.toFixed(2);
+
+            statusMsg.innerHTML = '';
+            resultDiv.style.display = 'block';
+        } catch (err) {
+            statusMsg.innerHTML = `<span class="error">${err.message}</span>`;
+        }
+    }
+</script>
+
+</body>
+</html>
