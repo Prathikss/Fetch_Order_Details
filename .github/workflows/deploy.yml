@@ -22,6 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Optional – keeps this for safety
       - name: Debug secrets presence
         run: |
           if [ -z "${{ secrets.GCP_WIF_PROVIDER }}" ]; then
@@ -31,16 +32,18 @@ jobs:
             echo "GCP_WIF_PROVIDER is SET"
           fi
 
+      # ✅ AUTH HANDLES EVERYTHING (OIDC + PROJECT)
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_SA_EMAIL }}
+          project_id: ${{ env.PROJECT_ID }}
+          token_format: access_token
 
+      # ✅ ONLY INSTALLS GCLOUD (NO AUTH, NO PROJECT)
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
 
       - name: Configure Docker
         run: gcloud auth configure-docker --quiet
