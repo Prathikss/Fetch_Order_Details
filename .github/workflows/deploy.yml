@@ -22,6 +22,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Debug secrets presence
+        run: |
+          if [ -z "${{ secrets.GCP_WIF_PROVIDER }}" ]; then
+            echo "GCP_WIF_PROVIDER is EMPTY"
+            exit 1
+          else
+            echo "GCP_WIF_PROVIDER is SET"
+          fi
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -52,12 +61,3 @@ jobs:
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated
-
-      - name: Debug secrets presence
-    run: |
-      if [ -z "${{ secrets.GCP_WIF_PROVIDER }}" ]; then
-        echo "GCP_WIF_PROVIDER is EMPTY"
-        exit 1
-      else
-        echo "GCP_WIF_PROVIDER is SET"
-      fi
