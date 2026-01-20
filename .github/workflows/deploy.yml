@@ -52,3 +52,12 @@ jobs:
             --region ${{ env.REGION }} \
             --platform managed \
             --allow-unauthenticated
+
+      - name: Debug secrets presence
+    run: |
+      if [ -z "${{ secrets.GCP_WIF_PROVIDER }}" ]; then
+        echo "GCP_WIF_PROVIDER is EMPTY"
+        exit 1
+      else
+        echo "GCP_WIF_PROVIDER is SET"
+      fi
