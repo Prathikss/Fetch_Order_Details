@@ -8,7 +8,7 @@
         * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #eef2f3;
+            background-color: #f0f4f4; /* Softer light grey-green background */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,7 +23,7 @@
             width: 100%;
             max-width: 450px;
         }
-        h2 { color: #2c3e50; text-align: center; margin-bottom: 1.5rem; }
+        h2 { color: #1a4d4d; text-align: center; margin-bottom: 1.5rem; }
 
         .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
 
@@ -36,11 +36,12 @@
             outline: none;
             transition: border-color 0.3s;
         }
-        input:focus { border-color: #3498db; }
+        /* Changed focus color to Deep Teal */
+        input:focus { border-color: #1a7a7a; }
 
         button {
             padding: 12px 20px;
-            background-color: #3498db;
+            background-color: #1a7a7a; /* Updated Button Color */
             color: white;
             border: none;
             border-radius: 6px;
@@ -48,14 +49,14 @@
             font-weight: bold;
             transition: background 0.3s;
         }
-        button:hover { background-color: #2980b9; }
+        button:hover { background-color: #125e5e; }
 
         #result {
             margin-top: 20px;
             padding: 15px;
             background-color: #f8f9fa;
             border-radius: 8px;
-            border-left: 5px solid #3498db;
+            border-left: 5px solid #1a7a7a; /* Updated Border Color */
             display: none;
         }
         .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
@@ -64,7 +65,8 @@
 
         #statusMsg { text-align: center; margin-top: 10px; font-size: 14px; }
         .error { color: #e74c3c; }
-        .loading { color: #3498db; }
+        /* Changed loading color to Deep Teal */
+        .loading { color: #1a7a7a; }
 
         .fade-in { animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -100,7 +102,7 @@
 </div>
 
 <script>
-    const baseURL = "https://springapp-683081983858.asia-south1.run.app/orders"; // deployed URL
+    const baseURL = "https://springapp-683081983858.asia-south1.run.app/orders";
 
     async function searchOrder() {
         const orderNo = document.getElementById('orderNoInput').value.trim();
